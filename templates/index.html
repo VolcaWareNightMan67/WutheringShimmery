@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wuthering Shimmery</title>
+    <style>
+        :root {
+            --neon-red: #ff003c;
+            --dark-bg: #050505;
+            --card-bg: #111;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #fff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Header & Search Section */
+        header {
+            padding: 60px 20px;
+            text-align: center;
+            background: linear-gradient(to bottom, #000, var(--dark-bg));
+            border-bottom: 2px solid var(--neon-red);
+            box-shadow: 0 0 25px rgba(255, 0, 60, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0 0 25px;
+            color: var(--neon-red);
+            text-shadow: 0 0 10px var(--neon-red), 0 0 30px var(--neon-red);
+            letter-spacing: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .search-container {
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px 30px;
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 50px;
+            color: #fff;
+            font-size: 1.1rem;
+            transition: 0.4s;
+            outline: none;
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: var(--neon-red);
+            box-shadow: 0 0 20px var(--neon-red);
+            background: #0a0a0a;
+        }
+
+        /* Gallery Grid */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            animation: fadeIn 1s ease;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #222;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: scale(1.03) translateY(-10px);
+            border-color: var(--neon-red);
+            box-shadow: 0 15px 30px rgba(255, 0, 60, 0.4);
+            z-index: 2;
+        }
+
+        .card img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(20%);
+            transition: 0.4s;
+        }
+
+        .card:hover img {
+            filter: grayscale(0%) contrast(1.1);
+        }
+
+        /* Modern Lightbox Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(15px);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .modal-wrap {
+            max-width: 95%;
+            max-height: 85%;
+            border: 1px solid var(--neon-red);
+            box-shadow: 0 0 60px rgba(255, 0, 60, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .modal-wrap img {
+            max-width: 100%;
+            max-height: 75vh;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .modal-info {
+            padding: 25px;
+            text-align: center;
+            border-top: 1px solid #222;
+        }
+
+        .modal-info h3 { 
+            color: var(--neon-red); 
+            margin: 0 0 12px; 
+            font-size: 1.4rem;
+            text-shadow: 0 0 5px var(--neon-red);
+        }
+
+        .modal-info a { 
+            color: #aaa; 
+            text-decoration: none; 
+            font-size: 0.85rem;
+            word-break: break-all;
+            transition: 0.3s;
+        }
+
+        .modal-info a:hover { color: #fff; text-shadow: 0 0 5px #fff; }
+
+        .close-btn {
+            position: absolute;
+            top: 30px; right: 50px;
+            font-size: 60px;
+            color: #fff;
+            cursor: pointer;
+            line-height: 1;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover { color: var(--neon-red); transform: rotate(90deg); }
+
+        /* Loader & Animations */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 100px;
+            color: var(--neon-red);
+            font-weight: bold;
+            letter-spacing: 8px;
+            font-size: 1.2rem;
+            animation: blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+            from { opacity: 0.2; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-red); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>USE THIS FOR FUN!</h1>
+    <div class="search-container">
+        <input type="text" id="target" placeholder="TYPE TARGET NAME (E.G. CINDO)..." autocomplete="off" autofocus>
+    </div>
+</header>
+
+<div id="loader" class="loader">Searching...</div>
+<div id="gallery" class="gallery"></div>
+
+<div id="modal" class="modal" onclick="closeModal()">
+    <span class="close-btn">&times;</span>
+    <div class="modal-wrap" onclick="event.stopPropagation()">
+        <img id="fullImg" src="">
+        <div class="modal-info">
+            <h3 id="imgTitle"></h3>
+            <a id="imgSource" target="_blank"></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('target');
+    const gallery = document.getElementById('gallery');
+    const loader = document.getElementById('loader');
+
+    // Pencarian saat tekan Enter
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') executeSearch();
+    });
+
+    async function executeSearch() {
+        const q = input.value.trim();
+        if (!q) return;
+
+        loader.style.display = 'block';
+        gallery.innerHTML = '';
+
+        try {
+            // Path relatif agar support Cloudflare Tunnel / Localhost otomatis
+            const response = await fetch(`/search?q=${encodeURIComponent(q)}`);
+            
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const data = await response.json();
+
+            if (data.length === 0) {
+                gallery.innerHTML = '<p style="text-align:center; width:100%; color:#555;">No targets found in database.</p>';
+            }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openModal(item.image, item.title, item.source);
+                
+                // Lazy loading & Error handling untuk link mati
+                card.innerHTML = `
+                    <img src="${item.image}" loading="lazy" 
+                         onerror="this.parentElement.style.display='none'">
+                `;
+                gallery.appendChild(card);
+            });
+        } catch (err) {
+            console.error(err);
+            alert("FATAL ERROR: Unable to reach Venice Backend (app.py).");
+        } finally {
+            loader.style.display = 'none';
+        }
+    }
+
+    function openModal(src, title, source) {
+        document.getElementById('modal').style.display = 'flex';
+        document.getElementById('fullImg').src = src;
+        document.getElementById('imgTitle').innerText = title || "Untitled Content";
+        document.getElementById('imgSource').innerText = "VISIT SOURCE: " + source;
+        document.getElementById('imgSource').href = source;
+        document.body.style.overflow = 'hidden'; // Stop scrolling saat modal buka
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('fullImg').src = ''; // Clear src agar tidak lag
+        document.body.style.overflow = 'auto';
+    }
+
+    // Keyboard support
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+</script>
+
+</body>
+</html>
