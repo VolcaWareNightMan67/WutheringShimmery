@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# --- FUNGSI SCRAPER (LOGIKA UTAMA) ---
+# --- FUNGSI FOTO (LOGIKA ASLI DARI KODE LAMA LU) ---
 def get_ddg_images(query):
     # Menambahkan akhiran xxx otomatis sesuai permintaan lu
     final_query = f"{query} xxx"
@@ -17,7 +17,7 @@ def get_ddg_images(query):
     }
 
     try:
-        # Step 1: Ambil VQD Token dari DuckDuckGo
+        # Step 1: Ambil VQD Token dari DuckDuckGo (PAKAI POST SESUAI KODE LAMA)
         res = requests.post('https://duckduckgo.com/', data={'q': final_query}, headers=headers, timeout=10)
         vqd_match = re.search(r'vqd=([\d-]+)\&', res.text)
         
@@ -52,29 +52,65 @@ def get_ddg_images(query):
         return results
 
     except Exception as e:
-        print(f"Error pada sistem: {e}")
+        print(f"Error pada sistem foto: {e}")
         return []
 
-# --- ROUTES (JALUR AKSES) ---
+# --- FUNGSI VIDEO (LOGIKA YANG SUDAH MANTAP) ---
+def get_eporner_videos(query):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+    }
+    api_url = f"https://www.eporner.com/api/v2/video/search/?query={query}&per_page=30&thumbsize=big&order=relevance"
+    
+    try:
+        res = requests.get(api_url, headers=headers, timeout=15)
+        data = res.json()
+        videos = []
+        for v in data.get('videos', []):
+            try:
+                # Fix durasi (zfill) biar kaga crash
+                m = str(v.get('length_min', 0))
+                s = str(v.get('length_sec', 0)).zfill(2)
+                
+                videos.append({
+                    'title': v['title'],
+                    'embed': v['embed'].replace('http://', 'https://'),
+                    'thumbnail': v['default_thumb']['src'].replace('http://', 'https://'),
+                    'duration': f"{m}:{s}",
+                    'views': v.get('views', '0'),
+                    'rate': v.get('rate', '5.0'),
+                    'url': v['url']
+                })
+            except:
+                continue
+        return videos
+    except Exception as e:
+        print(f"Error pada sistem video: {e}")
+        return []
 
-# Route Halaman Utama
+# --- ROUTES ---
+
 @app.route('/')
 def home():
-    # Flask bakal nyari index.html di folder 'templates'
     return render_template('index.html')
 
-# Route API Pencarian
+# API Pencarian Foto (Pakai Logika Lama Lu)
 @app.route('/api/search')
 def api_search():
     query = request.args.get('q')
-    if not query:
-        return jsonify([])
-    
-    print(f"[*] Menyerang target: {query}")
+    if not query: return jsonify([])
+    print(f"[*] Menyerang target (FOTO): {query}")
     data = get_ddg_images(query)
     return jsonify(data)
 
-# Support untuk Vercel (Production)
+# API Pencarian Video (Pakai Logika Mantap)
+@app.route('/api/videos')
+def api_videos():
+    query = request.args.get('q')
+    if not query: return jsonify([])
+    print(f"[*] Menyerang target (VIDEO): {query}")
+    data = get_eporner_videos(query)
+    return jsonify(data)
+
 if __name__ == '__main__':
-    # Localhost pake port 5000
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
