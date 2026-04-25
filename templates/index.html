@@ -242,7 +242,7 @@
 
         try {
             // Path relatif agar support Cloudflare Tunnel / Localhost otomatis
-            const response = await fetch(`/search?q=${encodeURIComponent(q)}`);
+          const response = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
             
             if (!response.ok) throw new Error('Network response was not ok');
             
