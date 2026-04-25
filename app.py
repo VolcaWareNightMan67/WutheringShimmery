@@ -64,7 +64,7 @@ def home():
     return render_template('index.html')
 
 # Route API Pencarian
-@app.route('/search')
+@app.route('/api/search')
 def api_search():
     query = request.args.get('q')
     if not query:
