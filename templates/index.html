@@ -2,296 +2,214 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wuthering Shimmery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-red: #ff003c;
-            --dark-bg: #050505;
-            --card-bg: #111;
+        :root { --neon: #ff003c; --bg: #030303; }
+        body { 
+            background: var(--bg); 
+            color: #eee; 
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #440010 0%, var(--bg) 80%);
+            background-attachment: fixed;
+        }
+        
+        .glass { 
+            background: rgba(15, 15, 15, 0.7); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 0, 60, 0.1);
         }
 
-        * { box-sizing: border-box; }
-
-        body {
-            background-color: var(--dark-bg);
-            color: #fff;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            overflow-x: hidden;
+        .neon-text { 
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon); 
+            text-shadow: 0 0 15px rgba(255, 0, 60, 0.8), 0 0 30px rgba(255, 0, 60, 0.4); 
         }
 
-        /* Header & Search Section */
-        header {
-            padding: 60px 20px;
-            text-align: center;
-            background: linear-gradient(to bottom, #000, var(--dark-bg));
-            border-bottom: 2px solid var(--neon-red);
-            box-shadow: 0 0 25px rgba(255, 0, 60, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        .neon-border { 
+            border: 1px solid rgba(255, 0, 60, 0.2);
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neon-border:hover { 
+            border-color: var(--neon);
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.3);
+            transform: translateY(-5px);
         }
 
-        h1 {
-            font-size: 3.5rem;
-            margin: 0 0 25px;
-            color: var(--neon-red);
-            text-shadow: 0 0 10px var(--neon-red), 0 0 30px var(--neon-red);
-            letter-spacing: 12px;
-            font-weight: 900;
-            text-transform: uppercase;
+        .search-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .search-box:focus {
+            border-color: var(--neon);
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.2);
         }
 
-        .search-container {
-            max-width: 650px;
-            margin: 0 auto;
-            position: relative;
+        .active-nav {
+            color: var(--neon) !important;
+            filter: drop-shadow(0 0 8px var(--neon));
+        }
+        
+        .active-nav .nav-indicator {
+            background: var(--neon);
+            box-shadow: 0 0 10px var(--neon);
         }
 
-        input {
-            width: 100%;
-            padding: 18px 30px;
-            background: #000;
-            border: 2px solid #333;
-            border-radius: 50px;
-            color: #fff;
-            font-size: 1.1rem;
-            transition: 0.4s;
-            outline: none;
-            text-align: center;
-        }
-
-        input:focus {
-            border-color: var(--neon-red);
-            box-shadow: 0 0 20px var(--neon-red);
-            background: #0a0a0a;
-        }
-
-        /* Gallery Grid */
-        .gallery {
+        .grid-custom {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            padding: 40px;
-            animation: fadeIn 1s ease;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        @media (min-width: 768px) {
+            .grid-custom { grid-template-columns: repeat(4, 1fr); }
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid #222;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-        }
-
-        .card:hover {
-            transform: scale(1.03) translateY(-10px);
-            border-color: var(--neon-red);
-            box-shadow: 0 15px 30px rgba(255, 0, 60, 0.4);
-            z-index: 2;
-        }
-
-        .card img {
-            width: 100%;
-            height: 450px;
-            object-fit: cover;
-            display: block;
-            filter: grayscale(20%);
-            transition: 0.4s;
-        }
-
-        .card:hover img {
-            filter: grayscale(0%) contrast(1.1);
-        }
-
-        /* Modern Lightbox Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.98);
-            backdrop-filter: blur(15px);
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .modal-wrap {
-            max-width: 95%;
-            max-height: 85%;
-            border: 1px solid var(--neon-red);
-            box-shadow: 0 0 60px rgba(255, 0, 60, 0.5);
-            border-radius: 8px;
-            overflow: hidden;
-            background: #000;
-        }
-
-        .modal-wrap img {
-            max-width: 100%;
-            max-height: 75vh;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .modal-info {
-            padding: 25px;
-            text-align: center;
-            border-top: 1px solid #222;
-        }
-
-        .modal-info h3 { 
-            color: var(--neon-red); 
-            margin: 0 0 12px; 
-            font-size: 1.4rem;
-            text-shadow: 0 0 5px var(--neon-red);
-        }
-
-        .modal-info a { 
-            color: #aaa; 
-            text-decoration: none; 
-            font-size: 0.85rem;
-            word-break: break-all;
-            transition: 0.3s;
-        }
-
-        .modal-info a:hover { color: #fff; text-shadow: 0 0 5px #fff; }
-
-        .close-btn {
-            position: absolute;
-            top: 30px; right: 50px;
-            font-size: 60px;
-            color: #fff;
-            cursor: pointer;
-            line-height: 1;
-            transition: 0.3s;
-        }
-
-        .close-btn:hover { color: var(--neon-red); transform: rotate(90deg); }
-
-        /* Loader & Animations */
-        .loader {
-            display: none;
-            text-align: center;
-            padding: 100px;
-            color: var(--neon-red);
-            font-weight: bold;
-            letter-spacing: 8px;
-            font-size: 1.2rem;
-            animation: blink 1s infinite alternate;
-        }
-
-        @keyframes blink {
-            from { opacity: 0.2; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--neon-red); border-radius: 10px; }
+        ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body>
+<body class="pb-24">
 
-<header>
-    <h1>USE THIS FOR FUN!</h1>
-    <div class="search-container">
-        <input type="text" id="target" placeholder="TYPE TARGET NAME (E.G. CINDO)..." autocomplete="off" autofocus>
-    </div>
-</header>
+    <header class="sticky top-0 z-50 glass px-4 py-6 border-b border-white/5">
+        <div class="max-w-2xl mx-auto flex flex-col items-center">
+            <h1 class="neon-text text-2xl font-black italic tracking-[0.3em] mb-6">USE THIS FOR FUN!</h1>
+            <div class="w-full relative group">
+                <input type="text" id="target" placeholder="TYPE TARGET..." 
+                       class="search-box w-full py-4 px-8 rounded-2xl outline-none text-center text-sm font-medium tracking-widest transition-all">
+                <div class="absolute inset-y-0 right-5 flex items-center text-white/30 group-focus-within:text-[#ff003c] transition-colors">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<div id="loader" class="loader">Searching...</div>
-<div id="gallery" class="gallery"></div>
+    <main class="max-w-6xl mx-auto p-4">
+        <div id="loader" class="hidden flex flex-col items-center py-24">
+            <div class="w-12 h-12 border-4 border-white/5 border-t-[#ff003c] rounded-full animate-spin"></div>
+            <p class="mt-4 text-[10px] font-bold tracking-[0.5em] text-[#ff003c]">SCANNING...</p>
+        </div>
+        <div id="gallery" class="grid-custom"></div>
+    </main>
 
-<div id="modal" class="modal" onclick="closeModal()">
-    <span class="close-btn">&times;</span>
-    <div class="modal-wrap" onclick="event.stopPropagation()">
-        <img id="fullImg" src="">
-        <div class="modal-info">
-            <h3 id="imgTitle"></h3>
-            <a id="imgSource" target="_blank"></a>
+    <div id="vModal" class="hidden fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="w-full max-w-4xl relative">
+            <button onclick="closeV()" class="absolute -top-12 right-0 text-white font-bold tracking-widest flex items-center gap-2 hover:text-[#ff003c]">
+                <i data-lucide="x-circle"></i> CLOSE
+            </button>
+            <div id="vPlayer" class="aspect-video glass rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(255,0,60,0.2)]"></div>
         </div>
     </div>
-</div>
 
-<script>
-    const input = document.getElementById('target');
-    const gallery = document.getElementById('gallery');
-    const loader = document.getElementById('loader');
+    <nav class="fixed bottom-0 left-0 right-0 glass h-20 flex justify-around items-center border-t border-white/5 z-[90]">
+        <button onclick="setMode('photo', this)" class="nav-btn active-nav flex flex-col items-center gap-1 flex-1 transition-all">
+            <i data-lucide="image" class="w-6 h-6"></i>
+            <span class="text-[9px] font-black tracking-widest uppercase">Visual</span>
+            <div class="nav-indicator w-5 h-[2px] mt-1 transition-all"></div>
+        </button>
+        <button onclick="setMode('video', this)" class="nav-btn flex flex-col items-center gap-1 flex-1 text-white/30 transition-all">
+            <i data-lucide="play-circle" class="w-6 h-6"></i>
+            <span class="text-[9px] font-black tracking-widest uppercase">Motion</span>
+            <div class="nav-indicator w-5 h-[2px] mt-1 transition-all"></div>
+        </button>
+    </nav>
 
-    // Pencarian saat tekan Enter
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') executeSearch();
-    });
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-    async function executeSearch() {
-        const q = input.value.trim();
-        if (!q) return;
+        let mode = 'photo';
+        const input = document.getElementById('target');
+        const gallery = document.getElementById('gallery');
+        const loader = document.getElementById('loader');
 
-        loader.style.display = 'block';
-        gallery.innerHTML = '';
+        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') gas(); });
 
-        try {
-            // Path relatif agar support Cloudflare Tunnel / Localhost otomatis
-          const response = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-            
-            if (!response.ok) throw new Error('Network response was not ok');
-            
-            const data = await response.json();
-
-            if (data.length === 0) {
-                gallery.innerHTML = '<p style="text-align:center; width:100%; color:#555;">No targets found in database.</p>';
-            }
-
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => openModal(item.image, item.title, item.source);
-                
-                // Lazy loading & Error handling untuk link mati
-                card.innerHTML = `
-                    <img src="${item.image}" loading="lazy" 
-                         onerror="this.parentElement.style.display='none'">
-                `;
-                gallery.appendChild(card);
+        function setMode(m, el) {
+            mode = m;
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('active-nav');
+                b.classList.add('text-white/30');
             });
-        } catch (err) {
-            console.error(err);
-            alert("FATAL ERROR: Unable to reach Venice Backend (app.py).");
-        } finally {
-            loader.style.display = 'none';
+            el.classList.add('active-nav');
+            el.classList.remove('text-white/30');
+            if(input.value) gas();
         }
-    }
 
-    function openModal(src, title, source) {
-        document.getElementById('modal').style.display = 'flex';
-        document.getElementById('fullImg').src = src;
-        document.getElementById('imgTitle').innerText = title || "Untitled Content";
-        document.getElementById('imgSource').innerText = "VISIT SOURCE: " + source;
-        document.getElementById('imgSource').href = source;
-        document.body.style.overflow = 'hidden'; // Stop scrolling saat modal buka
-    }
+        async function gas() {
+            const val = input.value.trim();
+            if(!val) return;
+            gallery.innerHTML = '';
+            loader.classList.remove('hidden');
 
-    function closeModal() {
-        document.getElementById('modal').style.display = 'none';
-        document.getElementById('fullImg').src = ''; // Clear src agar tidak lag
-        document.body.style.overflow = 'auto';
-    }
+            try {
+                const api = mode === 'photo' ? '/api/search' : '/api/videos';
+                const res = await fetch(`${api}?q=${encodeURIComponent(val)}`);
+                const data = await res.json();
 
-    // Keyboard support
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-    });
-</script>
+                if(data.length === 0) {
+                    gallery.innerHTML = `<div class="col-span-full text-center py-24 text-white/20 font-bold tracking-[0.3em]">NO DATA FOUND</div>`;
+                }
 
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "glass neon-border rounded-2xl overflow-hidden flex flex-col";
+                    
+                    if(mode === 'photo') {
+                        card.innerHTML = `
+                            <div class="relative overflow-hidden group">
+                                <img src="${item.image}" class="w-full h-48 md:h-64 object-cover transition-transform duration-700 group-hover:scale-110" 
+                                     onclick="window.open('${item.image}')" loading="lazy">
+                            </div>
+                            <div class="p-3">
+                                <p class="text-[9px] text-white/40 truncate italic mb-2">${item.title}</p>
+                                <a href="${item.source}" target="_blank" class="flex items-center justify-center gap-2 text-[8px] border border-white/10 py-2 rounded-lg font-bold tracking-widest hover:bg-[#ff003c] transition-colors">
+                                    <i data-lucide="external-link" class="w-3 h-3"></i> SOURCE
+                                </a>
+                            </div>`;
+                    } else {
+                        card.innerHTML = `
+                            <div class="relative group cursor-pointer" onclick="play('${item.embed}')">
+                                <img src="${item.thumbnail}" class="w-full h-32 md:h-40 object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-10 h-10 bg-[#ff003c] rounded-full flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
+                                        <i data-lucide="play" class="w-5 h-5 fill-white"></i>
+                                    </div>
+                                </div>
+                                <span class="absolute bottom-2 right-2 glass text-[8px] px-2 py-1 rounded font-bold border border-[#ff003c]/30 text-[#ff003c]">${item.duration}</span>
+                            </div>
+                            <div class="p-3">
+                                <p class="text-[10px] font-bold line-clamp-1 mb-2 tracking-tight">${item.title}</p>
+                                <div class="flex justify-between items-center text-[8px] text-white/30 mb-3 font-medium">
+                                    <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> ${item.views}</span>
+                                    <span class="text-[#ff003c] flex items-center gap-1"><i data-lucide="star" class="w-3 h-3 fill-[#ff003c]"></i> ${item.rate}</span>
+                                </div>
+                                <button onclick="play('${item.embed}')" class="w-full bg-[#ff003c] text-white text-[9px] py-2.5 rounded-xl font-black tracking-widest shadow-[0_5px_15px_rgba(255,0,60,0.3)] active:scale-95 transition-all flex items-center justify-center gap-2">
+                                    <i data-lucide="tv" class="w-4 h-4"></i> STREAM NOW
+                                </button>
+                            </div>`;
+                    }
+                    gallery.appendChild(card);
+                });
+                lucide.createIcons(); // Re-render icons for new cards
+            } catch (e) {
+                gallery.innerHTML = `<div class="col-span-full text-center py-24 text-red-500 font-bold">SYSTEM ERROR</div>`;
+            }
+            loader.classList.add('hidden');
+        }
+
+        function play(url) {
+            document.getElementById('vModal').classList.remove('hidden');
+            document.getElementById('vPlayer').innerHTML = `<iframe src="${url}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>`;
+            lucide.createIcons();
+        }
+
+        function closeV() {
+            document.getElementById('vModal').classList.add('hidden');
+            document.getElementById('vPlayer').innerHTML = '';
+        }
+    </script>
 </body>
 </html>
